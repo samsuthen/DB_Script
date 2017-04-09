@@ -1,0 +1,51 @@
+package oracle;
+
+import java.sql.*;
+
+import org.testng.Reporter;
+import org.testng.annotations.Test;
+
+public class OracleCon {
+
+	@Test
+	public static void main1() {
+		try {
+			// step1 load the driver class
+			// Class.forName("")
+
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+
+			// step2 create the connection object
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "system", "sys");
+
+			// step3 create the statement object
+			Statement stmt = con.createStatement();
+
+			ResultSet rs = null;
+			// step4 execute query
+			rs = stmt.executeQuery("select * from emp");
+
+			String flag = "false";
+
+			while (rs.next()) {
+
+				if (rs.getString(1).equals("11")) {
+					Reporter.log("Verified the DB data ID - " + rs.getInt(1));
+					flag = "true";
+				}
+
+			}
+
+			if (flag.equals("false")) {
+				Reporter.log("unable Verified the DB data ID - " + rs.getInt(1));
+				assert false;
+			}
+			// step5 close the connection object
+			con.close();
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+	}
+}
